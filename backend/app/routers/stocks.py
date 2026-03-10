@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
 
-from app.config import BIST30
+from app.config import BIST100
 from app.models.responses import OHLCV, PriceResponse, StockInfo, StocksResponse
 from app.services.data_fetcher import fetch_price_data
 
@@ -10,7 +10,7 @@ router = APIRouter(prefix="/api/stocks", tags=["stocks"])
 @router.get("", response_model=StocksResponse)
 async def get_stocks():
     return StocksResponse(
-        stocks=[StockInfo(**stock) for stock in BIST30]
+        stocks=[StockInfo(**stock) for stock in BIST100]
     )
 
 

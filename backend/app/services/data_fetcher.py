@@ -5,11 +5,11 @@ from pathlib import Path
 import pandas as pd
 import yfinance as yf
 
-from app.config import BIST30, CACHE_DIR, CACHE_TTL_SECONDS
+from app.config import BIST100, CACHE_DIR, CACHE_TTL_SECONDS
 
 
 def _get_yahoo_symbol(symbol: str) -> str:
-    for stock in BIST30:
+    for stock in BIST100:
         if stock["symbol"] == symbol.upper():
             return stock["yahoo_symbol"]
     raise ValueError(f"Bilinmeyen sembol: {symbol}")
