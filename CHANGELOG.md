@@ -5,7 +5,7 @@ Bu proje [Semantic Versioning](https://semver.org/) kullanır.
 ## [0.1.0] - 2026-03-10
 
 ### Eklendi
-- FastAPI backend: BIST-30 hisse listesi, fiyat verisi ve backtest API
+- FastAPI backend: BIST-100 hisse listesi, fiyat verisi ve backtest API
 - 3 teknik analiz stratejisi: SMA Kesişim, RSI, MACD
 - Portföy simülasyon motoru (long-only, tam pozisyon)
 - 9 performans metriği: toplam getiri, Sharpe oranı, maks. düşüş, kazanma oranı vb.

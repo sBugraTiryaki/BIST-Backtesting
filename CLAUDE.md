@@ -64,11 +64,11 @@ docker compose down              # Durdur
 - Degisken/fonksiyon isimleri: Ingilizce (Python/TS standardi)
 - Dosya/klasor isimleri: Ingilizce, snake_case (backend), camelCase (frontend)
 
-## BIST-30 Hisse Listesi
-Hardcoded config.py'de. Yahoo Finance suffix: `.IS` (ornek: THYAO.IS)
+## BIST-100 Hisse Listesi
+Hardcoded config.py'de (30 BIST-30 + 69 ek = 99 hisse). Yahoo Finance suffix: `.IS` (ornek: THYAO.IS)
 
 ## Onemli Dosyalar
-- `backend/app/config.py` — BIST-30 listesi, cache ayarlari
+- `backend/app/config.py` — BIST-100 listesi, cache ayarlari
 - `backend/app/services/backtester.py` — Portfoy simulasyon motoru
 - `backend/app/strategies/` — Strateji implementasyonlari
 - `frontend/src/hooks/useBacktest.ts` — Ana state yonetimi

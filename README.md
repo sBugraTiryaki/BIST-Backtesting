@@ -8,7 +8,7 @@ Borsa İstanbul (BIST) hisse senetleri için web tabanlı backtesting aracı. Ko
 ## Özellikler
 
 - **3 Hazır Strateji**: SMA Kesişim, RSI, MACD
-- **BIST-30 Hisse Desteği**: Türkiye'nin en likit 30 hissesi
+- **BIST-100 Hisse Desteği**: Türkiye'nin en likit 100 hissesi
 - **İnteraktif Grafikler**: TradingView Lightweight Charts ile mum grafiği, indikatör overlay ve AL/SAT sinyalleri
 - **Senkronize Grafikler**: Fiyat ve portföy grafikleri eşanlı hareket eder
 - **Detaylı Metrikler**: Toplam getiri, Sharpe oranı, maksimum düşüş, kazanma oranı ve daha fazlası
@@ -120,7 +120,7 @@ BIST-Backtesting/
 ├── backend/
 │   ├── app/
 │   │   ├── main.py              # FastAPI uygulama, CORS, router
-│   │   ├── config.py            # BIST-30 listesi, cache ayarları
+│   │   ├── config.py            # BIST-100 listesi, cache ayarları
 │   │   ├── routers/
 │   │   │   ├── stocks.py        # GET /api/stocks
 │   │   │   └── backtest.py      # POST /api/backtest, GET /api/strategies
@@ -152,7 +152,7 @@ BIST-Backtesting/
 │   │   └── types/index.ts       # TypeScript tipleri
 │   ├── Dockerfile
 │   └── nginx.conf
-├── docker-compose.yml
+├── docker-compose.yaml
 ├── CLAUDE.md
 ├── CONTRIBUTING.md
 ├── CHANGELOG.md
@@ -165,7 +165,7 @@ Backend Swagger dokümantasyonu: `http://localhost:8000/docs`
 
 | Endpoint | Metot | Açıklama |
 |----------|-------|----------|
-| `/api/stocks` | GET | BIST-30 hisse listesi |
+| `/api/stocks` | GET | BIST-100 hisse listesi |
 | `/api/strategies` | GET | Mevcut stratejiler ve parametreleri |
 | `/api/backtest` | POST | Backtest çalıştır |
 
