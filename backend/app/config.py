@@ -51,6 +51,7 @@ BIST100: list[dict[str, str]] = [
     {"symbol": "CANTE", "name": "Çan2 Termik", "yahoo_symbol": "CANTE.IS"},
     {"symbol": "CCOLA", "name": "Coca-Cola İçecek", "yahoo_symbol": "CCOLA.IS"},
     {"symbol": "CIMSA", "name": "Çimsa Çimento", "yahoo_symbol": "CIMSA.IS"},
+    {"symbol": "CWENE", "name": "CW Enerji", "yahoo_symbol": "CWENE.IS"},
     {"symbol": "DAPGM", "name": "DAP Gayrimenkul", "yahoo_symbol": "DAPGM.IS"},
     {"symbol": "DOAS", "name": "Doğuş Otomotiv", "yahoo_symbol": "DOAS.IS"},
     {"symbol": "DOHOL", "name": "Doğan Holding", "yahoo_symbol": "DOHOL.IS"},
