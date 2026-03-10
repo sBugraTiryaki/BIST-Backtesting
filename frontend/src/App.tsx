@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Dashboard } from './components/Layout/Dashboard';
 import { ControlPanel } from './components/ControlPanel/ControlPanel';
 import { ChartContainer } from './components/Charts/ChartContainer';
@@ -8,22 +9,29 @@ import { ErrorAlert } from './components/common/ErrorAlert';
 import { useStocks } from './hooks/useStocks';
 import { useBacktest } from './hooks/useBacktest';
 import { TrendingUp } from 'lucide-react';
+import type { BacktestRequest } from './types';
 
 function App() {
   const { stocks, strategies, loading: dataLoading, error: dataError } = useStocks();
   const { loading, error, result, execute } = useBacktest();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  function handleRun(request: BacktestRequest) {
+    setSidebarOpen(false);
+    execute(request);
+  }
 
   const sidebar = (
     <ControlPanel
       stocks={stocks}
       strategies={strategies}
       loading={loading}
-      onRun={execute}
+      onRun={handleRun}
     />
   );
 
   return (
-    <Dashboard sidebar={sidebar}>
+    <Dashboard sidebar={sidebar} sidebarOpen={sidebarOpen} onSidebarToggle={setSidebarOpen}>
       {dataLoading && <Spinner />}
       {dataError && <ErrorAlert message={dataError} />}
       {error && <ErrorAlert message={error} />}

@@ -52,7 +52,7 @@ export function ControlPanel({ stocks, strategies, loading, onRun }: Props) {
   }
 
   return (
-    <aside className="flex w-80 shrink-0 flex-col overflow-hidden border-r border-border bg-card">
+    <aside className="flex h-full w-80 shrink-0 flex-col overflow-hidden border-r border-border bg-card">
       {/* Header */}
       <div className="flex items-center gap-2.5 border-b border-border px-5 py-4">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/15">
