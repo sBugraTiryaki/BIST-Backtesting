@@ -30,11 +30,12 @@ function DateButton({ label, date, onSelect }: { label: string; date: string; on
     <div className="flex-1 space-y-1">
       <span className="text-[11px] text-muted-foreground">{label}</span>
       <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="outline" className="w-full justify-start text-left text-xs font-mono">
-            <CalendarIcon className="mr-2 h-3.5 w-3.5 opacity-50" />
-            {parsed ? format(parsed, 'dd MMM yyyy', { locale: tr }) : 'Sec...'}
-          </Button>
+        <PopoverTrigger
+          render={<Button variant="outline" />}
+          className="w-full justify-start text-left text-xs font-mono"
+        >
+          <CalendarIcon className="mr-2 h-3.5 w-3.5 opacity-50" />
+          {parsed ? format(parsed, 'dd MMM yyyy', { locale: tr }) : 'Seç...'}
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar

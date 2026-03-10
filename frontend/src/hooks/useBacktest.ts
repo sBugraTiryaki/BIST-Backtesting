@@ -13,7 +13,7 @@ type Action =
   | { type: 'SUCCESS'; payload: BacktestResult }
   | { type: 'ERROR'; payload: string };
 
-function reducer(state: State, action: Action): State {
+function reducer(_state: State, action: Action): State {
   switch (action.type) {
     case 'START':
       return { loading: true, error: null, result: null };

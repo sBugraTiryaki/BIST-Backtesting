@@ -20,8 +20,12 @@ export function StockSelector({ stocks, value, onChange }: Props) {
     <div className="space-y-2">
       <Label className="text-xs text-muted-foreground">Hisse Senedi</Label>
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between font-normal">
+        <PopoverTrigger
+          render={<Button variant="outline" />}
+          role="combobox"
+          aria-expanded={open}
+          className="w-full justify-between font-normal"
+        >
             {selected ? (
               <span>
                 <span className="font-semibold text-green-400">{selected.symbol}</span>
@@ -31,7 +35,6 @@ export function StockSelector({ stocks, value, onChange }: Props) {
               <span className="text-muted-foreground">Hisse seçin...</span>
             )}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[280px] p-0" align="start">
           <Command>
