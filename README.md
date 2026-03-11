@@ -1,6 +1,6 @@
 # BIST-Backtesting — Strateji Test Aracı
 
-BIST hisse senetleri için 10 popüler stratejiyi al-bekle (buy & hold) sistemiyle karşılaştıran web tabanlı backtesting aracı. Kod yazmadan teknik analiz stratejilerini geçmiş veriler üzerinde test edin.
+BIST hisse senetleri için 10 popüler stratejiyi al-unut (buy & hold) sistemiyle karşılaştıran web tabanlı backtesting aracı. Kod yazmadan teknik analiz stratejilerini geçmiş veriler üzerinde test edin.
 
 <!-- TODO: Ekran görüntüsü ekle -->
 <!-- ![BIST-Backtesting Ekran Görüntüsü](docs/screenshot.png) -->
@@ -12,7 +12,7 @@ BIST hisse senetleri için 10 popüler stratejiyi al-bekle (buy & hold) sistemiy
 - **BIST-100 + Serbest Sembol**: 100 hazır hisse ve istediğiniz BIST sembolünü yazabilme
 - **İnteraktif Grafikler**: TradingView Lightweight Charts ile mum grafiği, indikatör overlay ve AL/SAT sinyalleri
 - **Senkronize Grafikler**: Fiyat, osilatör ve portföy grafikleri eşanlı hareket eder
-- **Performans Karşılaştırması**: Strateji getirisi vs al-bekle getirisi yan yana
+- **Performans Karşılaştırması**: Strateji getirisi vs al-unut getirisi yan yana
 - **Ayarlanabilir Parametreler**: Slider'lar ile strateji parametrelerini değiştirin, açıklamalı
 - **Hybrid Veri Kaynağı**: yfinance OHLCV + İş Yatırım split-düzeltme referansı
 - **Mobil Uyumlu**: Responsive tasarım, hamburger menü, touch-friendly grafikler
@@ -95,7 +95,7 @@ Tarayıcıda `http://localhost:3000` adresini açın.
 3. **Strateji** seçin — açıklamayı okuyarak nasıl çalıştığını öğrenin
 4. **Parametreleri** slider'lar ile ayarlayın — her birinin ne yaptığı açıklanır
 5. **Backtest Başlat** butonuna basın
-6. Sonuçları inceleyin: strateji getirisi vs al-bekle karşılaştırması, grafikler ve işlem tablosu
+6. Sonuçları inceleyin: strateji getirisi vs al-unut karşılaştırması, grafikler ve işlem tablosu
 
 ## Veri Kaynağı ve Split Düzeltme
 

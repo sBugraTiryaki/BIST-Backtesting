@@ -75,7 +75,7 @@ export function MetricsPanel({ metrics }: Props) {
           positive={metrics.total_return_pct > 0}
         />
         <MetricCard
-          label="Al-Tut Getirisi"
+          label="Al-Unut Getirisi"
           value={metrics.buy_hold_return_pct}
           suffix="%"
           positive={metrics.buy_hold_return_pct > 0}
