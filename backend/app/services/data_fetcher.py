@@ -4,17 +4,27 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import requests
 import yfinance as yf
 
 from app.config import BIST100, CACHE_DIR, CACHE_TTL_SECONDS
+
+ISYATIRIM_URL = (
+    "https://www.isyatirim.com.tr/_layouts/15/"
+    "Isyatirim.Website/Common/Data.aspx/HisseTekil"
+)
 
 
 def _get_yahoo_symbol(symbol: str) -> str:
     for stock in BIST100:
         if stock["symbol"] == symbol.upper():
             return stock["yahoo_symbol"]
-    # BIST-100 dışı semboller için de .IS suffix ile dene
     return f"{symbol.upper()}.IS"
+
+
+def _get_bist_symbol(yahoo_symbol: str) -> str:
+    """THYAO.IS -> THYAO"""
+    return yahoo_symbol.replace(".IS", "")
 
 
 def _cache_path(symbol: str, start: str, end: str) -> Path:
@@ -29,49 +39,97 @@ def _is_cache_valid(path: Path) -> bool:
     return age < CACHE_TTL_SECONDS
 
 
-def _adjust_for_splits(df: pd.DataFrame, yahoo_symbol: str) -> pd.DataFrame:
-    """Yahoo Finance BIST split düzeltmesi yapmayabiliyor. Manuel düzelt."""
-    ticker = yf.Ticker(yahoo_symbol)
-    splits = ticker.splits
-    if splits.empty:
+def _fetch_isyatirim_adjusted(symbol: str, start: str, end: str) -> pd.Series | None:
+    """İş Yatırım'dan split-adjusted kapanış fiyatlarını çek.
+
+    Returns: DatetimeIndex'li Series (HG_KAPANIS) veya None (hata durumunda).
+    """
+    try:
+        # YYYY-MM-DD -> DD-MM-YYYY
+        s = pd.Timestamp(start)
+        e = pd.Timestamp(end)
+        params = {
+            "hisse": symbol,
+            "startdate": s.strftime("%d-%m-%Y"),
+            "enddate": e.strftime("%d-%m-%Y"),
+        }
+        resp = requests.get(ISYATIRIM_URL, params=params, timeout=15)
+        resp.raise_for_status()
+        data = resp.json()
+
+        rows = data.get("value", [])
+        if not rows:
+            return None
+
+        records = []
+        for row in rows:
+            date_str = row["HGDG_TARIH"]
+            hgdg_close = row.get("HGDG_KAPANIS")
+            if hgdg_close is not None:
+                records.append({"Date": pd.to_datetime(date_str, dayfirst=True), "Adj_Close": float(hgdg_close)})
+
+        if not records:
+            return None
+
+        ref = pd.DataFrame(records).set_index("Date").sort_index()
+        return ref["Adj_Close"]
+    except Exception:
+        return None
+
+
+def _adjust_with_isyatirim(df: pd.DataFrame, yahoo_symbol: str, start: str, end: str) -> pd.DataFrame:
+    """İş Yatırım HGDG_KAPANIS referansıyla yfinance split hatalarını düzelt.
+
+    HGDG_KAPANIS split-düzeltmeli sürekli seridir.
+    yfinance Close / HGDG Close oranı ~1.0'dan farklıysa split düzeltme hatası vardır.
+    Pre-split günlerdeki tüm OHLC fiyatlar bu oranla bölünerek düzeltilir.
+    """
+    bist_symbol = _get_bist_symbol(yahoo_symbol)
+    ref = _fetch_isyatirim_adjusted(bist_symbol, start, end)
+
+    if ref is None or ref.empty:
         return df
 
-    daily_ratio = df["Close"] / df["Close"].shift(1)
+    # Timezone'ları temizle
+    if df.index.tz is not None:
+        df.index = df.index.tz_localize(None)
+    if ref.index.tz is not None:
+        ref.index = ref.index.tz_localize(None)
 
-    for split_date, ratio in splits.items():
-        if ratio <= 1:
-            continue
+    # Ortak tarihleri bul
+    common_dates = df.index.intersection(ref.index)
+    if common_dates.empty:
+        return df
 
-        split_dt = split_date.tz_localize(None) if split_date.tzinfo else split_date
+    # yfinance Close / İş Yatırım HGDG Close
+    # Doğru günlerde ~1.0, split hatası olan günlerde >1.0 (yfinance fazla yüksek)
+    ratios = df.loc[common_dates, "Close"] / ref[common_dates]
 
-        # Sadece veri aralığımızdaki split'leri işle (±30 gün tampon)
-        if split_dt < df.index[0] - pd.Timedelta(days=30):
-            continue
-        if split_dt > df.index[-1] + pd.Timedelta(days=30):
-            continue
+    # Tolerans: %5
+    wrong_mask = (ratios - 1.0).abs() > 0.05
+    if not wrong_mask.any():
+        return df
 
-        # Split noktasında beklenen günlük oran: ~1/ratio (ör. 11:1 split → ~0.09)
-        expected = 1.0 / ratio
+    wrong_dates = wrong_mask[wrong_mask].index
+    correct_dates = wrong_mask[~wrong_mask].index
 
-        # Bildirilen tarih etrafında ±30 gün pencerede ara
-        window_start = split_dt - pd.Timedelta(days=30)
-        window_end = split_dt + pd.Timedelta(days=30)
-        window = daily_ratio[
-            (daily_ratio.index >= window_start) & (daily_ratio.index <= window_end)
-        ]
+    if wrong_dates.empty or correct_dates.empty:
+        return df
 
-        # Beklenen orana yakın günü bul (%30 tolerans)
-        candidates = window[
-            (window > expected * 0.7) & (window < expected * 1.3)
-        ]
+    # Split oranı: yfinance pre-split günlerde kaç kat fazla gösteriyor
+    split_ratio = ratios[wrong_dates].median()
 
-        if candidates.empty:
-            continue
+    # Split noktası: son hatalı günün ertesi
+    last_wrong = wrong_dates[-1]
+    split_day_candidates = correct_dates[correct_dates > last_wrong]
+    if split_day_candidates.empty:
+        return df
+    split_day = split_day_candidates[0]
 
-        actual_split_day = candidates.index[0]
-        mask = df.index < actual_split_day
-        df.loc[mask, ["Open", "High", "Low", "Close"]] /= ratio
-        df.loc[mask, "Volume"] = (df.loc[mask, "Volume"] * ratio).astype(np.int64)
+    # Pre-split günleri düzelt: orana böl
+    mask = df.index < split_day
+    df.loc[mask, ["Open", "High", "Low", "Close"]] /= split_ratio
+    df.loc[mask, "Volume"] = (df.loc[mask, "Volume"] * split_ratio).astype(np.int64)
 
     return df
 
@@ -120,8 +178,8 @@ def fetch_price_data(symbol: str, start_date: str, end_date: str) -> pd.DataFram
     df = df[["Open", "High", "Low", "Close", "Volume"]].copy()
     df.columns = ["Open", "High", "Low", "Close", "Volume"]
 
-    # Stock split düzeltmesi
-    df = _adjust_for_splits(df, yahoo_symbol)
+    # Split düzeltmesi: İş Yatırım referansıyla
+    df = _adjust_with_isyatirim(df, yahoo_symbol, start_date, end_date)
 
     # Cache'e yaz
     cache_data = df.reset_index().copy()
