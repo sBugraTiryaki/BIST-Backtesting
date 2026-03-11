@@ -15,7 +15,7 @@ export function useChartZoom(
   chartRef: React.RefObject<IChartApi | null>
 ) {
   const [showHint, setShowHint] = useState(false);
-  const hintTimeout = useRef<number>();
+  const hintTimeout = useRef<number>(undefined);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;

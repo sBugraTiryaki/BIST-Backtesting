@@ -19,7 +19,7 @@ function MetricCard({ label, value, suffix = '', positive, sub, integer, tooltip
   tooltip?: string;
 }) {
   const [showTooltip, setShowTooltip] = useState(false);
-  const hoverTimer = useRef<number>();
+  const hoverTimer = useRef<number>(undefined);
   const color = positive === undefined
     ? 'text-foreground'
     : positive
