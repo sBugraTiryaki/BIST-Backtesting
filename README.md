@@ -1,28 +1,46 @@
 # BIST-Backtesting — Strateji Test Aracı
 
-Borsa İstanbul (BIST) hisse senetleri için web tabanlı backtesting aracı. Kod yazmadan teknik analiz stratejilerini geçmiş veriler üzerinde test edin.
+BIST hisse senetleri için 10 popüler stratejiyi al-bekle (buy & hold) sistemiyle karşılaştıran web tabanlı backtesting aracı. Kod yazmadan teknik analiz stratejilerini geçmiş veriler üzerinde test edin.
 
 <!-- TODO: Ekran görüntüsü ekle -->
 <!-- ![BIST-Backtesting Ekran Görüntüsü](docs/screenshot.png) -->
 
 ## Özellikler
 
-- **3 Hazır Strateji**: SMA Kesişim, RSI, MACD
-- **BIST-100 Hisse Desteği**: Türkiye'nin en likit 100 hissesi
+- **10 Hazır Strateji**: SMA Kesişim, RSI, MACD, Bollinger Bantları, Stochastic, Supertrend, EMA Kesişim, Parabolic SAR, Ichimoku Bulutu, Williams %R
+- **Eğitici Açıklamalar**: Her strateji ve parametre için Türkçe açıklama — kullanırken öğrenin
+- **BIST-100 + Serbest Sembol**: 100 hazır hisse ve istediğiniz BIST sembolünü yazabilme
 - **İnteraktif Grafikler**: TradingView Lightweight Charts ile mum grafiği, indikatör overlay ve AL/SAT sinyalleri
-- **Senkronize Grafikler**: Fiyat ve portföy grafikleri eşanlı hareket eder
-- **Detaylı Metrikler**: Toplam getiri, Sharpe oranı, maksimum düşüş, kazanma oranı ve daha fazlası
-- **İşlem Geçmişi**: Her alışverişin detaylı tablosu
-- **Ayarlanabilir Parametreler**: Slider'lar ile strateji parametrelerini değiştirin
+- **Senkronize Grafikler**: Fiyat, osilatör ve portföy grafikleri eşanlı hareket eder
+- **Performans Karşılaştırması**: Strateji getirisi vs al-bekle getirisi yan yana
+- **Ayarlanabilir Parametreler**: Slider'lar ile strateji parametrelerini değiştirin, açıklamalı
+- **Hybrid Veri Kaynağı**: yfinance OHLCV + İş Yatırım split-düzeltme referansı
+- **Mobil Uyumlu**: Responsive tasarım, hamburger menü, touch-friendly grafikler
 - **Dark Tema**: Profesyonel, göz yormayan karanlık arayüz
-- **Türkçe Arayüz**: Tüm arayüz ve metrikler Türkçe
+- **Türkçe Arayüz**: Tüm arayüz, metrikler ve tarihler Türkçe
+
+## Stratejiler
+
+| # | Strateji | Tip | Açıklama |
+|---|----------|-----|----------|
+| 1 | **SMA Kesişim** | Trend Takip | Kısa ve uzun hareketli ortalama kesişimi |
+| 2 | **RSI** | Momentum | Aşırı alım/satım bölgelerinde dönüş sinyali |
+| 3 | **MACD** | Trend + Momentum | MACD ve sinyal çizgisi kesişimi |
+| 4 | **Bollinger Bantları** | Mean Reversion | Fiyatın istatistiksel bantlara göre konumu |
+| 5 | **Stochastic Osilatör** | Momentum | %K/%D kesişimi ile dönüş noktaları |
+| 6 | **Supertrend** | Trend Takip | ATR bazlı trend takip (Matriks'te popüler) |
+| 7 | **EMA Kesişim** | Trend Takip | Üstel hareketli ortalama kesişimi (SMA'dan hızlı) |
+| 8 | **Parabolic SAR** | Trend Takip | Dur ve Dönüş noktaları (Wilder formülü) |
+| 9 | **Ichimoku Bulutu** | Trend + Momentum | Tenkan/Kijun kesişimi + bulut filtresi |
+| 10 | **Williams %R** | Momentum | Fiyatın dönem aralığındaki konumu |
 
 ## Teknoloji Stack
 
 ### Backend
 - **FastAPI** + Python 3.12
-- **pandas** / **numpy** — indikatör hesaplamaları
-- **yfinance** — BIST fiyat verileri (Yahoo Finance)
+- **pandas** / **numpy** — indikatör hesaplamaları (saf, ta-lib bağımlılığı yok)
+- **yfinance** — BIST OHLCV verileri
+- **İş Yatırım API** — split/bedelsiz düzeltme referansı
 - **Pydantic v2** — veri doğrulama
 
 ### Frontend
@@ -30,7 +48,6 @@ Borsa İstanbul (BIST) hisse senetleri için web tabanlı backtesting aracı. Ko
 - **Vite** — hızlı geliştirme ve build
 - **Tailwind CSS v4** + **shadcn/ui** — modern, tutarlı arayüz
 - **TradingView Lightweight Charts v5** — profesyonel finansal grafikler
-- **date-fns** — tarih formatlama (Türkçe locale)
 
 ### Altyapı
 - **Docker Compose** — tek komutla çalıştırma
@@ -73,45 +90,33 @@ Tarayıcıda `http://localhost:3000` adresini açın.
 
 ## Kullanım
 
-1. Sol panelden **hisse senedi** seçin (örneğin THYAO - Türk Hava Yolları)
-2. **Tarih aralığı** belirleyin (hazır butonlar: 6A, 1Y, 2Y, 5Y)
-3. **Strateji** seçin (SMA Kesişim, RSI veya MACD)
-4. Strateji **parametrelerini** slider'lar ile ayarlayın
-5. **Başlangıç sermayesi** girin (varsayılan: 100.000 ₺)
-6. **Backtest Başlat** butonuna basın
-7. Sonuçları inceleyin: grafikler, metrikler ve işlem tablosu
+1. Sol panelden **hisse senedi** seçin veya yazın
+2. **Tarih aralığı** belirleyin
+3. **Strateji** seçin — açıklamayı okuyarak nasıl çalıştığını öğrenin
+4. **Parametreleri** slider'lar ile ayarlayın — her birinin ne yaptığı açıklanır
+5. **Backtest Başlat** butonuna basın
+6. Sonuçları inceleyin: strateji getirisi vs al-bekle karşılaştırması, grafikler ve işlem tablosu
 
-## Stratejiler
+## Veri Kaynağı ve Split Düzeltme
 
-### SMA Kesişim
-Kısa ve uzun hareketli ortalama kesişimi ile alış/satış sinyali üretir.
-- **Kısa Periyot**: 5-50 (varsayılan: 20)
-- **Uzun Periyot**: 10-200 (varsayılan: 50)
+Fiyat verisi iki kaynağın birleşimiyle oluşturulur:
 
-### RSI (Relative Strength Index)
-Aşırı alım/satım bölgelerinde alış/satış sinyali üretir.
-- **RSI Periyot**: 5-30 (varsayılan: 14)
-- **Aşırı Alım**: 60-90 (varsayılan: 70)
-- **Aşırı Satım**: 10-40 (varsayılan: 30)
+| | yfinance | İş Yatırım |
+|---|---------|-----------|
+| Open | ✅ | ❌ |
+| High/Low/Close | ✅ | ✅ |
+| Split düzeltme | ❌ Güvenilmez | ✅ Doğru |
 
-### MACD (Moving Average Convergence Divergence)
-MACD ve sinyal çizgisi kesişimi ile trend takibi yapar.
-- **Hızlı EMA**: 5-20 (varsayılan: 12)
-- **Yavaş EMA**: 15-40 (varsayılan: 26)
-- **Sinyal Periyot**: 5-15 (varsayılan: 9)
+**Neden hybrid?** yfinance BIST hisselerinde bedelsiz sermaye artırımlarını doğru düzeltmiyor. İş Yatırım'ın `HGDG_KAPANIS` verisi split-adjusted sürekli seri sağlıyor ama Open fiyatı yok. İkisi birlikte kullanılarak hem candlestick grafik çizilebiliyor hem de split düzeltmesi doğru yapılıyor.
 
-## Performans Metrikleri
+## Backtest Mantığı
 
-| Metrik | Açıklama |
-|--------|----------|
-| Toplam Getiri | Strateji toplam kâr/zarar yüzdesi |
-| Al-Tut Getirisi | Hisseyi alıp bekletmenin getirisi (karşılaştırma) |
-| Maks. Düşüş | Zirveden en büyük gerileme yüzdesi |
-| Sharpe Oranı | Risk-getiri dengesi (yıllık, √252) |
-| Kazanma Oranı | Kârlı işlem yüzdesi |
-| İşlem Sayısı | Toplam tamamlanan işlem |
-| Kâr Faktörü | Toplam kâr / toplam zarar |
-| Ort. İşlem Getirisi | İşlem başına ortalama kâr/zarar |
+- **Başlangıç sermayesi**: Varsayılan 100.000 ₺
+- **Pozisyon**: Long-only (sadece alış)
+- **AL sinyali**: Tüm nakit ile kapanış fiyatından hisse al
+- **SAT sinyali**: Tüm hisseleri kapanış fiyatından sat
+- **Equity curve**: Her gün portföy değeri = nakit + (hisse adedi × kapanış)
+- **Veri cache**: 4 saatlik dosya bazlı JSON cache
 
 ## Proje Yapısı
 
@@ -128,14 +133,21 @@ BIST-Backtesting/
 │   │   │   ├── requests.py      # Pydantic request modelleri
 │   │   │   └── responses.py     # Pydantic response modelleri
 │   │   ├── services/
-│   │   │   ├── data_fetcher.py  # yfinance wrapper + dosya cache
+│   │   │   ├── data_fetcher.py  # yfinance + İş Yatırım hybrid veri
 │   │   │   ├── backtester.py    # Portföy simülasyon motoru
 │   │   │   └── metrics.py       # Performans metrikleri
-│   │   └── strategies/
+│   │   └── strategies/          # 10 strateji implementasyonu
 │   │       ├── base.py          # Soyut strateji arayüzü
 │   │       ├── sma_crossover.py # SMA Kesişim
 │   │       ├── rsi.py           # RSI
-│   │       └── macd.py          # MACD
+│   │       ├── macd.py          # MACD
+│   │       ├── bollinger_bands.py
+│   │       ├── stochastic.py
+│   │       ├── supertrend.py
+│   │       ├── ema_crossover.py
+│   │       ├── parabolic_sar.py
+│   │       ├── ichimoku.py
+│   │       └── williams_r.py
 │   ├── tests/
 │   ├── Dockerfile
 │   └── requirements.txt
@@ -147,15 +159,13 @@ BIST-Backtesting/
 │   │   │   ├── ControlPanel/    # Sol panel kontrolleri
 │   │   │   ├── Results/         # Metrik kartları ve işlem tablosu
 │   │   │   └── common/          # Spinner, ErrorAlert
-│   │   ├── hooks/               # useBacktest, useStocks
+│   │   ├── hooks/               # useBacktest, useStocks, useChartZoom
 │   │   ├── api/client.ts        # API istekleri
 │   │   └── types/index.ts       # TypeScript tipleri
 │   ├── Dockerfile
 │   └── nginx.conf
 ├── docker-compose.yaml
 ├── CLAUDE.md
-├── CONTRIBUTING.md
-├── CHANGELOG.md
 └── LICENSE (MIT)
 ```
 
@@ -166,17 +176,8 @@ Backend Swagger dokümantasyonu: `http://localhost:8000/docs`
 | Endpoint | Metot | Açıklama |
 |----------|-------|----------|
 | `/api/stocks` | GET | BIST-100 hisse listesi |
-| `/api/strategies` | GET | Mevcut stratejiler ve parametreleri |
+| `/api/strategies` | GET | 10 strateji ve parametreleri |
 | `/api/backtest` | POST | Backtest çalıştır |
-
-## Backtest Mantığı
-
-- **Başlangıç sermayesi**: Varsayılan 100.000 ₺
-- **Pozisyon**: Long-only (sadece alış)
-- **AL sinyali**: Tüm nakit ile kapanış fiyatından hisse al
-- **SAT sinyali**: Tüm hisseleri kapanış fiyatından sat
-- **Equity curve**: Her gün portföy değeri = nakit + (hisse adedi × kapanış)
-- **Veri**: yfinance üzerinden Yahoo Finance (4 saatlik cache)
 
 ## Lisans
 

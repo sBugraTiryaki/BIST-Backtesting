@@ -39,8 +39,8 @@ docker compose down              # Durdur
 
 ### vectorbt Kullanmiyoruz
 - Acik kaynak versiyonu bakimsiz (0.28.4'te dondu)
-- 3 strateji icin overkill, bellek yogun
-- Saf pandas/numpy ile SMA/RSI/MACD 10-15 satir kodla yazilabilir
+- 10 strateji icin bile overkill, bellek yogun
+- Saf pandas/numpy ile indikatorler 10-20 satir kodla yazilabilir
 
 ### Indikatorler Saf pandas/numpy
 - ta-lib Docker'da C derleme sorunu yaratir
@@ -67,15 +67,24 @@ docker compose down              # Durdur
 ## Hisse Listesi
 Dropdown'da BIST-100 (config.py'de 100 hisse) gosterilir. Kullanici BIST-100 disinda herhangi bir sembol de yazabilir — backend `SEMBOL.IS` formatinda yfinance'a sorar.
 
-### yfinance Stock Split Sorunu
-Yahoo Finance BIST hisselerinde split duzeltmesini guvenilir sekilde uygulamiyor. `auto_adjust=True` sadece temettu duzeltir, split'i duzeltmez. Bu nedenle `data_fetcher.py`'de `_adjust_for_splits()` fonksiyonu var: `yf.Ticker().splits` ile split bilgisini alip fiyat verisindeki kirillma noktasini tespit ederek pre-split fiyatlari orana boler. Is Yatirim (isyatirimhisse) verisiyle dogrulanmistir.
+### Hybrid Veri Kaynagi ve Split Duzeltme
+yfinance BIST hisselerinde bedelsiz sermaye artirimlarini (split) guvenilir sekilde duzeltmiyor. Bu nedenle hybrid yaklasim kullaniliyor:
+- **yfinance**: OHLCV verisi (Open dahil candlestick icin gerekli)
+- **Is Yatirim API**: `HGDG_KAPANIS` split-adjusted surekli seri (referans)
+- `data_fetcher.py`'de `_adjust_with_isyatirim()`: yfinance Close / HGDG Close oranini karsilastirir, %5'ten fazla sapma varsa split hatasi tespit eder ve pre-split OHLC fiyatlari median oranla boler
+- Is Yatirim'da Open verisi yok, bu yuzden yfinance'tan alinir ve ayni oranla duzeltilir
 
 ## Onemli Dosyalar
 - `backend/app/config.py` — BIST-100 listesi, cache ayarlari
+- `backend/app/services/data_fetcher.py` — yfinance + Is Yatirim hybrid veri cekme, split duzeltme
 - `backend/app/services/backtester.py` — Portfoy simulasyon motoru
-- `backend/app/strategies/` — Strateji implementasyonlari
+- `backend/app/routers/backtest.py` — Strateji registry, STRATEGIES dict, STRATEGY_DEFINITIONS listesi
+- `backend/app/strategies/` — 10 strateji implementasyonu (BaseStrategy inherit eder)
 - `frontend/src/hooks/useBacktest.ts` — Ana state yonetimi
+- `frontend/src/hooks/useChartZoom.ts` — Platform-aware Cmd/Ctrl+scroll zoom
 - `frontend/src/components/Charts/PriceChart.tsx` — Candlestick grafik
+- `frontend/src/components/Charts/IndicatorChart.tsx` — Osilatör grafigi (overlay=False stratejiler icin)
+- `frontend/src/components/Results/MetricsPanel.tsx` — Performans kartlari
 
 ## Backtest Mantigi
 - Baslangic sermayesi: 100.000 TL
