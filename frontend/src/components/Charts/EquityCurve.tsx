@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { createChart, type IChartApi, ColorType, AreaSeries } from 'lightweight-charts';
 import type { EquityPoint } from '../../types';
+import { useChartZoom } from '../../hooks/useChartZoom';
+import { ChartZoomHint } from './ChartZoomHint';
 
 interface Props {
   data: EquityPoint[];
@@ -8,8 +10,10 @@ interface Props {
 }
 
 export function EquityCurve({ data, onChartReady }: Props) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
+  const showHint = useChartZoom(wrapperRef, chartRef);
 
   useEffect(() => {
     if (!containerRef.current || data.length === 0) return;
@@ -25,6 +29,8 @@ export function EquityCurve({ data, onChartReady }: Props) {
       },
       width: containerRef.current.clientWidth,
       height: 200,
+      handleScroll: { mouseWheel: false, vertTouchDrag: false },
+      handleScale: { mouseWheel: false, pinch: true },
       timeScale: { borderColor: 'rgba(255,255,255,0.1)' },
       rightPriceScale: { borderColor: 'rgba(255,255,255,0.1)' },
     });
@@ -59,5 +65,10 @@ export function EquityCurve({ data, onChartReady }: Props) {
     };
   }, [data]);
 
-  return <div ref={containerRef} className="rounded-lg" />;
+  return (
+    <div ref={wrapperRef} className="relative">
+      <div ref={containerRef} className="rounded-lg" />
+      <ChartZoomHint visible={showHint} />
+    </div>
+  );
 }

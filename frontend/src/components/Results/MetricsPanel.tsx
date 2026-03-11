@@ -7,7 +7,14 @@ interface Props {
 
 const fmt = new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-function MetricCard({ label, value, suffix = '', positive }: { label: string; value: number; suffix?: string; positive?: boolean }) {
+function MetricCard({ label, value, suffix = '', positive, sub, integer }: {
+  label: string;
+  value: number;
+  suffix?: string;
+  positive?: boolean;
+  sub?: string;
+  integer?: boolean;
+}) {
   const color = positive === undefined
     ? 'text-foreground'
     : positive
@@ -19,28 +26,48 @@ function MetricCard({ label, value, suffix = '', positive }: { label: string; va
       <CardContent className="p-3">
         <p className="text-[11px] text-muted-foreground">{label}</p>
         <p className={`mt-1 text-lg font-semibold tabular-nums ${color}`}>
-          {fmt.format(value)}{suffix}
+          {integer ? value : fmt.format(value)}{suffix}
         </p>
+        {sub && <p className="text-[10px] text-muted-foreground mt-0.5">{sub}</p>}
       </CardContent>
     </Card>
   );
 }
 
 export function MetricsPanel({ metrics }: Props) {
+  const beatsBuyHold = metrics.total_return_pct > metrics.buy_hold_return_pct;
+  const diff = metrics.total_return_pct - metrics.buy_hold_return_pct;
+
   return (
     <div>
-      <h3 className="mb-3 text-sm font-medium text-muted-foreground">Performans Metrikleri</h3>
-      <div className="grid grid-cols-2 gap-2 lg:grid-cols-3 xl:grid-cols-5">
-        <MetricCard label="Toplam Getiri" value={metrics.total_return_pct} suffix="%" positive={metrics.total_return_pct > 0} />
-        <MetricCard label="Al-Tut Getirisi" value={metrics.buy_hold_return_pct} suffix="%" positive={metrics.buy_hold_return_pct > 0} />
-        <MetricCard label="Maks. Düşüş" value={-metrics.max_drawdown_pct} suffix="%" positive={false} />
-        <MetricCard label="Sharpe Oranı" value={metrics.sharpe_ratio} positive={metrics.sharpe_ratio > 0} />
-        <MetricCard label="Kazanma Oranı" value={metrics.win_rate_pct} suffix="%" positive={metrics.win_rate_pct > 50} />
-        <MetricCard label="Toplam İşlem" value={metrics.total_trades} />
-        <MetricCard label="Kazanan" value={metrics.winning_trades} positive={true} />
-        <MetricCard label="Kaybeden" value={metrics.losing_trades} positive={false} />
-        <MetricCard label="Ort. İşlem Getirisi" value={metrics.avg_trade_return_pct} suffix="%" positive={metrics.avg_trade_return_pct > 0} />
-        <MetricCard label="Kâr Faktörü" value={metrics.profit_factor} positive={metrics.profit_factor > 1} />
+      <h3 className="mb-3 text-sm font-medium text-muted-foreground">Performans</h3>
+      <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+        <MetricCard
+          label="Strateji Getirisi"
+          value={metrics.total_return_pct}
+          suffix="%"
+          positive={metrics.total_return_pct > 0}
+        />
+        <MetricCard
+          label="Al-Tut Getirisi"
+          value={metrics.buy_hold_return_pct}
+          suffix="%"
+          positive={metrics.buy_hold_return_pct > 0}
+          sub={`Strateji ${beatsBuyHold ? '+' : ''}${fmt.format(diff)} puan ${beatsBuyHold ? 'önde' : 'geride'}`}
+        />
+        <MetricCard
+          label="Kârlı İşlem Oranı"
+          value={metrics.win_rate_pct}
+          suffix="%"
+          positive={metrics.win_rate_pct > 50}
+          sub={`${metrics.total_trades} işlemden ${metrics.winning_trades} tanesi kârlı`}
+        />
+        <MetricCard
+          label="İşlem Sayısı"
+          value={metrics.total_trades}
+          integer
+          sub={`${metrics.winning_trades} kârlı · ${metrics.losing_trades} zararlı`}
+        />
       </div>
     </div>
   );

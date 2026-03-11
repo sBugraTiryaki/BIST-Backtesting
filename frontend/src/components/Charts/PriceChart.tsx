@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { createChart, type IChartApi, ColorType, CandlestickSeries, LineSeries, createSeriesMarkers } from 'lightweight-charts';
 import type { OHLCV, IndicatorData, SignalPoint } from '../../types';
+import { useChartZoom } from '../../hooks/useChartZoom';
+import { ChartZoomHint } from './ChartZoomHint';
 
 interface Props {
   priceData: OHLCV[];
@@ -17,8 +19,10 @@ const INDICATOR_COLORS = [
 ];
 
 export function PriceChart({ priceData, indicators, signals, onChartReady }: Props) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
+  const showHint = useChartZoom(wrapperRef, chartRef);
 
   useEffect(() => {
     if (!containerRef.current || priceData.length === 0) return;
@@ -34,6 +38,8 @@ export function PriceChart({ priceData, indicators, signals, onChartReady }: Pro
       },
       width: containerRef.current.clientWidth,
       height: 400,
+      handleScroll: { mouseWheel: false, vertTouchDrag: false },
+      handleScale: { mouseWheel: false, pinch: true },
       timeScale: { borderColor: 'rgba(255,255,255,0.1)' },
       rightPriceScale: { borderColor: 'rgba(255,255,255,0.1)' },
       crosshair: {
@@ -120,5 +126,10 @@ export function PriceChart({ priceData, indicators, signals, onChartReady }: Pro
     };
   }, [priceData, indicators, signals]);
 
-  return <div ref={containerRef} className="rounded-lg" />;
+  return (
+    <div ref={wrapperRef} className="relative">
+      <div ref={containerRef} className="rounded-lg" />
+      <ChartZoomHint visible={showHint} />
+    </div>
+  );
 }
