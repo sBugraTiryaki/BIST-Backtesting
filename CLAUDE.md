@@ -64,8 +64,11 @@ docker compose down              # Durdur
 - Degisken/fonksiyon isimleri: Ingilizce (Python/TS standardi)
 - Dosya/klasor isimleri: Ingilizce, snake_case (backend), camelCase (frontend)
 
-## BIST-100 Hisse Listesi
-Hardcoded config.py'de (30 BIST-30 + 69 ek = 99 hisse). Yahoo Finance suffix: `.IS` (ornek: THYAO.IS)
+## Hisse Listesi
+Dropdown'da BIST-100 (config.py'de 100 hisse) gosterilir. Kullanici BIST-100 disinda herhangi bir sembol de yazabilir — backend `SEMBOL.IS` formatinda yfinance'a sorar.
+
+### yfinance Stock Split Sorunu
+Yahoo Finance BIST hisselerinde split duzeltmesini guvenilir sekilde uygulamiyor. `auto_adjust=True` sadece temettu duzeltir, split'i duzeltmez. Bu nedenle `data_fetcher.py`'de `_adjust_for_splits()` fonksiyonu var: `yf.Ticker().splits` ile split bilgisini alip fiyat verisindeki kirillma noktasini tespit ederek pre-split fiyatlari orana boler. Is Yatirim (isyatirimhisse) verisiyle dogrulanmistir.
 
 ## Onemli Dosyalar
 - `backend/app/config.py` — BIST-100 listesi, cache ayarlari

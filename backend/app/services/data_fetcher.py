@@ -13,7 +13,8 @@ def _get_yahoo_symbol(symbol: str) -> str:
     for stock in BIST100:
         if stock["symbol"] == symbol.upper():
             return stock["yahoo_symbol"]
-    raise ValueError(f"Bilinmeyen sembol: {symbol}")
+    # BIST-100 dışı semboller için de .IS suffix ile dene
+    return f"{symbol.upper()}.IS"
 
 
 def _cache_path(symbol: str, start: str, end: str) -> Path:
