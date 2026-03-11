@@ -39,8 +39,8 @@ function App() {
 
       {result && (
         <div className="space-y-6">
-          <ChartContainer result={result} />
           <MetricsPanel metrics={result.metrics} />
+          <ChartContainer result={result} />
           <TradeTable trades={result.trades} />
         </div>
       )}

@@ -33,6 +33,7 @@ class StrategyParam(BaseModel):
     max: float
     default: float
     step: float = 1
+    description: str = ""
 
 
 class StrategyInfo(BaseModel):

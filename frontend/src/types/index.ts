@@ -21,6 +21,7 @@ export interface StrategyParam {
   max: number;
   default: number;
   step: number;
+  description?: string;
 }
 
 export interface StrategyInfo {

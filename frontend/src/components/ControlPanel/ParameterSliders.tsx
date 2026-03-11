@@ -23,6 +23,9 @@ export function ParameterSliders({ params, values, onChange }: Props) {
               <span className="text-xs text-muted-foreground">{p.label}</span>
               <Badge variant="secondary" className="font-mono text-xs text-green-400">{val}</Badge>
             </div>
+            {p.description && (
+              <p className="text-[10px] leading-tight text-muted-foreground">{p.description}</p>
+            )}
             <Slider
               min={p.min}
               max={p.max}

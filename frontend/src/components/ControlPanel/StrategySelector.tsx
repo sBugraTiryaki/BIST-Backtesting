@@ -12,7 +12,7 @@ export function StrategySelector({ strategies, value, onChange }: Props) {
   return (
     <div className="space-y-2">
       <Label className="text-xs text-muted-foreground">Strateji</Label>
-      <div className="space-y-1.5">
+      <div className="max-h-64 overflow-y-auto rounded-lg border border-border p-1 space-y-1.5">
         {strategies.map((s) => (
           <button
             key={s.id}
