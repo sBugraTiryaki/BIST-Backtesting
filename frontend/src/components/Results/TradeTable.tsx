@@ -8,6 +8,11 @@ interface Props {
 
 const fmt = new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+function fmtDate(dateStr: string) {
+  const [y, m, d] = dateStr.split('-');
+  return `${d}.${m}.${y}`;
+}
+
 export function TradeTable({ trades }: Props) {
   if (trades.length === 0) {
     return (
@@ -39,8 +44,8 @@ export function TradeTable({ trades }: Props) {
           <TableBody>
             {trades.map((t, i) => (
               <TableRow key={i}>
-                <TableCell className="font-mono text-xs">{t.entry_date}</TableCell>
-                <TableCell className="font-mono text-xs">{t.exit_date}</TableCell>
+                <TableCell className="font-mono text-xs">{fmtDate(t.entry_date)}</TableCell>
+                <TableCell className="font-mono text-xs">{fmtDate(t.exit_date)}</TableCell>
                 <TableCell className="text-right tabular-nums">{fmt.format(t.entry_price)}</TableCell>
                 <TableCell className="text-right tabular-nums">{fmt.format(t.exit_price)}</TableCell>
                 <TableCell className={`text-right font-medium tabular-nums ${t.pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
