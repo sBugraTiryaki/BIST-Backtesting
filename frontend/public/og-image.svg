@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="line1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+    <linearGradient id="line2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="area1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="area2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle grid -->
+  <g stroke="#334155" stroke-width="0.5" opacity="0.3">
+    <line x1="100" y1="200" x2="1100" y2="200"/>
+    <line x1="100" y1="280" x2="1100" y2="280"/>
+    <line x1="100" y1="360" x2="1100" y2="360"/>
+    <line x1="100" y1="440" x2="1100" y2="440"/>
+    <line x1="100" y1="520" x2="1100" y2="520"/>
+  </g>
+
+  <!-- Equity curve area fills -->
+  <path d="M100,480 L200,470 L300,450 L400,420 L500,380 L600,350 L700,310 L800,280 L900,240 L1000,200 L1100,180 L1100,520 L100,520 Z" fill="url(#area1)"/>
+  <path d="M100,480 L200,475 L300,465 L400,440 L500,430 L600,410 L700,420 L800,390 L900,370 L1000,340 L1100,300 L1100,520 L100,520 Z" fill="url(#area2)"/>
+
+  <!-- Strategy equity curve (green - winning) -->
+  <path d="M100,480 L200,470 L300,450 L400,420 L500,380 L600,350 L700,310 L800,280 L900,240 L1000,200 L1100,180" stroke="url(#line1)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Buy & Hold curve (blue - losing) -->
+  <path d="M100,480 L200,475 L300,465 L400,440 L500,430 L600,410 L700,420 L800,390 L900,370 L1000,340 L1100,300" stroke="url(#line2)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8,4"/>
+
+  <!-- Buy signals -->
+  <g fill="#22c55e">
+    <polygon points="200,478 206,488 194,488" opacity="0.7"/>
+    <polygon points="500,388 506,398 494,398" opacity="0.7"/>
+    <polygon points="800,288 806,298 794,298" opacity="0.7"/>
+  </g>
+
+  <!-- Sell signals -->
+  <g fill="#ef4444">
+    <polygon points="350,458 356,448 344,448" opacity="0.7"/>
+    <polygon points="650,318 656,308 644,308" opacity="0.7"/>
+    <polygon points="1000,208 1006,198 994,198" opacity="0.7"/>
+  </g>
+
+  <!-- Legend -->
+  <line x1="750" y1="555" x2="780" y2="555" stroke="#22c55e" stroke-width="2.5"/>
+  <text x="788" y="560" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="16">Strateji</text>
+  <line x1="880" y1="555" x2="910" y2="555" stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="8,4"/>
+  <text x="918" y="560" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="16">Al-Bekle</text>
+
+  <!-- Favicon icon (top-left) -->
+  <g transform="translate(80, 50) scale(2)">
+    <rect width="32" height="32" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <path d="M6 22 L12 14 L18 18 L26 8" stroke="#22c55e" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="26" cy="8" r="2" fill="#22c55e"/>
+  </g>
+
+  <!-- Title -->
+  <text x="160" y="82" fill="#f1f5f9" font-family="system-ui, -apple-system, sans-serif" font-size="38" font-weight="700" letter-spacing="-0.5">BIST-Backtesting</text>
+
+  <!-- Subtitle -->
+  <text x="160" y="115" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="20">Strateji vs Al-Bekle — Veriyle test edin</text>
+
+  <!-- Strategy badges -->
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13">
+    <rect x="80" y="140" width="65" height="26" rx="13" fill="#22c55e" fill-opacity="0.12" stroke="#22c55e" stroke-opacity="0.3" stroke-width="1"/>
+    <text x="112" y="157" fill="#4ade80" text-anchor="middle">SMA</text>
+
+    <rect x="155" y="140" width="55" height="26" rx="13" fill="#22c55e" fill-opacity="0.12" stroke="#22c55e" stroke-opacity="0.3" stroke-width="1"/>
+    <text x="182" y="157" fill="#4ade80" text-anchor="middle">RSI</text>
+
+    <rect x="220" y="140" width="72" height="26" rx="13" fill="#22c55e" fill-opacity="0.12" stroke="#22c55e" stroke-opacity="0.3" stroke-width="1"/>
+    <text x="256" y="157" fill="#4ade80" text-anchor="middle">MACD</text>
+
+    <rect x="302" y="140" width="88" height="26" rx="13" fill="#22c55e" fill-opacity="0.12" stroke="#22c55e" stroke-opacity="0.3" stroke-width="1"/>
+    <text x="346" y="157" fill="#4ade80" text-anchor="middle">Bollinger</text>
+
+    <rect x="400" y="140" width="90" height="26" rx="13" fill="#22c55e" fill-opacity="0.12" stroke="#22c55e" stroke-opacity="0.3" stroke-width="1"/>
+    <text x="445" y="157" fill="#4ade80" text-anchor="middle">Ichimoku</text>
+
+    <rect x="500" y="140" width="70" height="26" rx="13" fill="#22c55e" fill-opacity="0.12" stroke="#22c55e" stroke-opacity="0.3" stroke-width="1"/>
+    <text x="535" y="157" fill="#4ade80" text-anchor="middle">+5 daha</text>
+  </g>
+
+  <!-- URL bottom -->
+  <text x="600" y="600" fill="#475569" font-family="system-ui, -apple-system, sans-serif" font-size="16" text-anchor="middle">bist-backtesting.bugratiryaki.com</text>
+</svg>
